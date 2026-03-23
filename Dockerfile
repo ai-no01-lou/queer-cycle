@@ -19,6 +19,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN npm run build
+RUN mkdir -p /app/public
 
 
 FROM node:20-alpine AS runner
@@ -29,7 +30,7 @@ ENV PORT=3000
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public 2>/dev/null || true
+COPY --from=builder /app/public ./public
 
 EXPOSE 3000
 
