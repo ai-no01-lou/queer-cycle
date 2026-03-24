@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPool } from '@/lib/db';
+import { requireAuth } from '@/lib/requireAuth';
 
-const DEFAULT_USER_ID = '00000000-0000-0000-0000-000000000001';
+export async function GET(req: NextRequest) {
+  const auth = await requireAuth(req);
+  if ('error' in auth) return auth.error;
+  const userId = auth.user.sub;
 
-export async function GET() {
   const pool = getPool();
   try {
     const result = await pool.query(
       'SELECT * FROM user_terminology WHERE user_id = $1 ORDER BY key',
-      [DEFAULT_USER_ID]
+      [userId]
     );
     return NextResponse.json(result.rows);
   } catch (err) {
@@ -17,6 +20,10 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = await requireAuth(req);
+  if ('error' in auth) return auth.error;
+  const userId = auth.user.sub;
+
   const pool = getPool();
   try {
     const body = await req.json();
@@ -29,7 +36,7 @@ export async function POST(req: NextRequest) {
        VALUES ($1, $2, $3)
        ON CONFLICT (user_id, key) DO UPDATE SET label = EXCLUDED.label, updated_at = NOW()
        RETURNING *`,
-      [DEFAULT_USER_ID, key, label]
+      [userId, key, label]
     );
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (err) {
