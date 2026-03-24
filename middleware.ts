@@ -18,14 +18,18 @@ export async function middleware(req: NextRequest) {
 
   const token = req.cookies.get('token')?.value;
   if (!token) {
-    return NextResponse.redirect(new URL('/login', req.url));
+    const url = req.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
   }
 
   try {
     await verifyToken(token);
     return NextResponse.next();
   } catch {
-    const response = NextResponse.redirect(new URL('/login', req.url));
+    const url = req.nextUrl.clone();
+    url.pathname = '/login';
+    const response = NextResponse.redirect(url);
     response.cookies.delete('token');
     return response;
   }
