@@ -72,6 +72,17 @@ export default function CalendarPage() {
 
   useEffect(() => { loadEntries(); }, [loadEntries]);
 
+  useEffect(() => {
+    fetch("/api/preferences")
+      .then(r => r.json())
+      .then(data => {
+        if (data.period_color) {
+          document.documentElement.style.setProperty("--period-color", data.period_color);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
   const startOffset = firstDay.getDay();
@@ -210,8 +221,8 @@ export default function CalendarPage() {
                   width: 10,
                   height: 10,
                   borderRadius: '50%',
-                  background: hasPeriod ? 'var(--accent)' : 'transparent',
-                  border: entry ? '2px solid var(--accent)' : '2px solid var(--border)',
+                  background: hasPeriod ? 'var(--period-color)' : 'transparent',
+                  border: entry ? '2px solid var(--period-color)' : '2px solid var(--border)',
                   display: 'block',
                 }}
               />
@@ -222,11 +233,11 @@ export default function CalendarPage() {
 
       <div className="flex gap-4 mt-4 text-xs" style={{ color: 'var(--text-muted)' }}>
         <span className="flex items-center gap-1">
-          <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--accent)', display: 'inline-block' }} />
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--period-color)', display: 'inline-block' }} />
           Period
         </span>
         <span className="flex items-center gap-1">
-          <span style={{ width: 10, height: 10, borderRadius: '50%', border: '2px solid var(--accent)', display: 'inline-block' }} />
+          <span style={{ width: 10, height: 10, borderRadius: '50%', border: '2px solid var(--period-color)', display: 'inline-block' }} />
           Logged
         </span>
       </div>

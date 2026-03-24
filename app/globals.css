@@ -13,6 +13,7 @@
   --border: #D9CDBF;
   --success: #5A8A5A;
   --error: #B54040;
+  --period-color: #C17A5A;
 
   /* legacy compat */
   --background: var(--bg);
