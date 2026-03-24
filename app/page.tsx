@@ -1,11 +1,17 @@
 import Link from 'next/link';
+import { getPool } from '@/lib/db';
+import { getUserFromRequest } from '@/lib/getUser';
 
 async function getRecentEntries() {
   try {
-    const res = await fetch('http://localhost:3000/api/entries', { cache: 'no-store' });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.slice(0, 5);
+    const user = await getUserFromRequest();
+    if (!user) return [];
+    const pool = getPool();
+    const result = await pool.query(
+      'SELECT * FROM entries WHERE user_id = $1 ORDER BY created_at DESC LIMIT 5',
+      [user.sub]
+    );
+    return result.rows;
   } catch {
     return [];
   }
