@@ -31,7 +31,7 @@ export default function RootLayout({
         style={{ background: "var(--bg)", color: "var(--text)" }}
       >
         <Nav />
-        <main className="px-4 py-6 max-w-md mx-auto">{children}</main>
+        <main className="px-4 py-6 pb-20 max-w-md mx-auto">{children}</main>
       </body>
     </html>
   );
