@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Nav from "./components/Nav";
+import ConditionalNav from "./components/ConditionalNav";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
         style={{ background: "var(--bg)", color: "var(--text)" }}
       >
-        <Nav />
+        <ConditionalNav />
         <main className="px-4 py-6 max-w-md mx-auto">{children}</main>
       </body>
     </html>
