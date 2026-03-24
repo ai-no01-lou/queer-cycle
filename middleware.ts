@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get('token')?.value;
   if (!token) {
     const url = req.nextUrl.clone();
-    url.pathname = '/login';
+    url.pathname = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/login`;
     return NextResponse.redirect(url);
   }
 
@@ -28,7 +28,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   } catch {
     const url = req.nextUrl.clone();
-    url.pathname = '/login';
+    url.pathname = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/login`;
     const response = NextResponse.redirect(url);
     response.cookies.delete('token');
     return response;
