@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+const inputClass = "w-full border rounded px-3 py-2 text-sm min-h-[44px]";
+const inputStyle = { background: "var(--bg-surface)", borderColor: "var(--border)", color: "var(--text)" };
+
 export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -42,48 +45,32 @@ export default function RegisterPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="name">Name (optional)</label>
-          <input
-            id="name"
-            type="text"
-            value={name}
+          <input id="name" type="text" value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border rounded px-3 py-2 bg-transparent"
-          />
+            className={inputClass} style={inputStyle} />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full border rounded px-3 py-2 bg-transparent"
-          />
+          <input id="email" type="email" value={email}
+            onChange={(e) => setEmail(e.target.value)} required
+            className={inputClass} style={inputStyle} />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full border rounded px-3 py-2 bg-transparent"
-          />
+          <input id="password" type="password" value={password}
+            onChange={(e) => setPassword(e.target.value)} required
+            className={inputClass} style={inputStyle} />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white rounded px-4 py-2 font-medium hover:bg-blue-700 disabled:opacity-50"
-        >
+        {error && <p className="text-sm" style={{ color: "var(--error)" }}>{error}</p>}
+        <button type="submit" disabled={loading}
+          className="w-full rounded px-4 font-medium min-h-[44px] disabled:opacity-50"
+          style={{ background: "var(--accent)", color: "#fff" }}>
           {loading ? 'Creating account…' : 'Create account'}
         </button>
       </form>
-      <p className="mt-4 text-sm text-center">
+      <p className="mt-4 text-sm text-center" style={{ color: "var(--text-muted)" }}>
         Already have an account?{' '}
-        <Link href="/login" className="text-blue-500 hover:underline">Sign in</Link>
+        <Link href="/login" className="underline" style={{ color: "var(--accent)" }}>Sign in</Link>
       </p>
     </div>
   );

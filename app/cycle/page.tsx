@@ -9,6 +9,10 @@ interface Term {
   label: string;
 }
 
+const inputClass = "border rounded px-3 py-2 text-sm w-full min-h-[44px]";
+const inputStyle = { background: "var(--bg-surface)", borderColor: "var(--border)", color: "var(--text)" };
+const labelStyle = { color: "var(--text-muted)" };
+
 export default function CyclePage() {
   const router = useRouter();
   const [terms, setTerms] = useState<Record<string, string>>({});
@@ -64,10 +68,7 @@ export default function CyclePage() {
       const res = await fetch('/api/entries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          module_id: moduleId,
-          data: form,
-        }),
+        body: JSON.stringify({ module_id: moduleId, data: form }),
       });
       if (!res.ok) throw new Error('Failed');
       setStatus('success');
@@ -79,32 +80,32 @@ export default function CyclePage() {
   }
 
   if (status === 'success') {
-    return <div className="text-green-400 text-lg">✓ Entry saved! Redirecting...</div>;
+    return <div className="text-lg font-medium" style={{ color: "var(--success)" }}>✓ Entry saved! Redirecting...</div>;
   }
 
   return (
-    <div className="max-w-md">
+    <div>
       <h1 className="text-2xl font-bold mb-6">{label('cycle_log_title', 'Log Cycle')}</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm text-gray-300 mb-1">{label('bleed_start', 'Bleed Start')} *</label>
+          <label className="block text-sm mb-1" style={labelStyle}>{label('bleed_start', 'Bleed Start')} *</label>
           <input type="date" required value={form.bleed_start}
             onChange={e => setForm(f => ({ ...f, bleed_start: e.target.value }))}
-            className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white w-full" />
+            className={inputClass} style={inputStyle} />
         </div>
 
         <div>
-          <label className="block text-sm text-gray-300 mb-1">{label('bleed_end', 'Bleed End')}</label>
+          <label className="block text-sm mb-1" style={labelStyle}>{label('bleed_end', 'Bleed End')}</label>
           <input type="date" value={form.bleed_end}
             onChange={e => setForm(f => ({ ...f, bleed_end: e.target.value }))}
-            className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white w-full" />
+            className={inputClass} style={inputStyle} />
         </div>
 
         <div>
-          <label className="block text-sm text-gray-300 mb-1">{label('flow', 'Flow')}</label>
+          <label className="block text-sm mb-1" style={labelStyle}>{label('flow', 'Flow')}</label>
           <select value={form.flow}
             onChange={e => setForm(f => ({ ...f, flow: e.target.value }))}
-            className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white w-full">
+            className={inputClass} style={inputStyle}>
             <option value="light">Light</option>
             <option value="medium">Medium</option>
             <option value="heavy">Heavy</option>
@@ -112,10 +113,10 @@ export default function CyclePage() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-300 mb-1">{label('mood', 'Mood')}</label>
+          <label className="block text-sm mb-1" style={labelStyle}>{label('mood', 'Mood')}</label>
           <select value={form.mood}
             onChange={e => setForm(f => ({ ...f, mood: e.target.value }))}
-            className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white w-full">
+            className={inputClass} style={inputStyle}>
             <option value="good">Good</option>
             <option value="okay">Okay</option>
             <option value="bad">Bad</option>
@@ -123,22 +124,27 @@ export default function CyclePage() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-300 mb-2">{label('symptoms', 'Symptoms')}</label>
+          <label className="block text-sm mb-2" style={labelStyle}>{label('symptoms', 'Symptoms')}</label>
           <div className="flex flex-wrap gap-2">
             {symptomOptions.map(s => (
               <button type="button" key={s}
                 onClick={() => toggleSymptom(s)}
-                className={`px-3 py-1 rounded text-sm border ${form.symptoms.includes(s) ? 'bg-pink-600 border-pink-500' : 'bg-gray-800 border-gray-700'}`}>
+                className="px-3 rounded text-sm border min-h-[44px]"
+                style={form.symptoms.includes(s)
+                  ? { background: "var(--accent)", borderColor: "var(--accent)", color: "#fff" }
+                  : { background: "var(--bg-surface)", borderColor: "var(--border)", color: "var(--text)" }
+                }>
                 {label(s, s)}
               </button>
             ))}
           </div>
         </div>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-sm" style={{ color: "var(--error)" }}>{error}</p>}
 
         <button type="submit" disabled={status === 'loading'}
-          className="bg-pink-600 hover:bg-pink-700 disabled:opacity-50 px-5 py-2 rounded font-medium w-full">
+          className="px-5 rounded font-medium w-full min-h-[44px] disabled:opacity-50"
+          style={{ background: "var(--accent)", color: "#fff" }}>
           {status === 'loading' ? 'Saving...' : 'Save Entry'}
         </button>
       </form>

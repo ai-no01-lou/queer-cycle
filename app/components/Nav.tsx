@@ -2,11 +2,14 @@ import Link from 'next/link';
 
 export default function Nav() {
   return (
-    <nav className="bg-gray-900 text-white px-6 py-3 flex gap-6 text-sm">
-      <Link href="/" className="hover:text-pink-400">Home</Link>
-      <Link href="/cycle" className="hover:text-pink-400">Log Cycle</Link>
-      <Link href="/hrt" className="hover:text-pink-400">Log HRT</Link>
-      <Link href="/settings" className="hover:text-pink-400">Settings</Link>
+    <nav
+      className="px-4 py-3 flex gap-4 text-sm font-medium border-b"
+      style={{ background: "var(--bg-surface)", borderColor: "var(--border)" }}
+    >
+      <Link href="/" className="min-h-[44px] flex items-center hover:underline" style={{ color: "var(--accent)" }}>Home</Link>
+      <Link href="/cycle" className="min-h-[44px] flex items-center hover:underline" style={{ color: "var(--accent)" }}>Log Cycle</Link>
+      <Link href="/hrt" className="min-h-[44px] flex items-center hover:underline" style={{ color: "var(--accent)" }}>Log HRT</Link>
+      <Link href="/settings" className="min-h-[44px] flex items-center hover:underline" style={{ color: "var(--accent)" }}>Settings</Link>
     </nav>
   );
 }

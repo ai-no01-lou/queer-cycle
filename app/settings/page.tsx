@@ -9,6 +9,9 @@ interface Term {
   is_custom: boolean;
 }
 
+const inputClass = "border rounded px-3 py-2 text-sm flex-1 min-h-[44px]";
+const inputStyle = { background: "var(--bg-surface)", borderColor: "var(--border)", color: "var(--text)" };
+
 export default function SettingsPage() {
   const [terms, setTerms] = useState<Term[]>([]);
   const [saving, setSaving] = useState<Record<string, boolean>>({});
@@ -65,44 +68,49 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-lg">
+    <div>
       <h1 className="text-2xl font-bold mb-6">Terminology Settings</h1>
-      <p className="text-gray-400 text-sm mb-4">Customize labels used throughout the app.</p>
+      <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>Customize labels used throughout the app.</p>
 
       <div className="space-y-3 mb-8">
         {terms.map(term => (
-          <div key={term.id} className="flex items-center gap-3">
-            <span className="text-gray-400 text-xs w-32 shrink-0 font-mono">{term.key}</span>
+          <div key={term.id} className="flex items-center gap-2">
+            <span className="text-xs w-28 shrink-0 font-mono" style={{ color: "var(--text-muted)" }}>{term.key}</span>
             <input
               value={term.label}
               onChange={e => updateLabel(term.id, e.target.value)}
-              className="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-white flex-1 text-sm" />
+              className={inputClass}
+              style={inputStyle} />
             <button
               onClick={() => saveTerm(term)}
               disabled={saving[term.id]}
-              className="bg-gray-700 hover:bg-gray-600 disabled:opacity-50 px-3 py-1.5 rounded text-sm shrink-0">
+              className="rounded text-sm shrink-0 px-3 min-h-[44px] disabled:opacity-50 border"
+              style={{ background: "var(--bg-surface-2)", borderColor: "var(--border)", color: "var(--text)" }}>
               {saved[term.id] ? '✓' : saving[term.id] ? '...' : 'Save'}
             </button>
           </div>
         ))}
       </div>
 
-      <div className="border-t border-gray-800 pt-6">
+      <div className="border-t pt-6" style={{ borderColor: "var(--border)" }}>
         <h2 className="text-lg font-semibold mb-3">Add Custom Term</h2>
         <div className="space-y-3">
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <input value={newKey} onChange={e => setNewKey(e.target.value)}
               placeholder="key (e.g. cycle_label)"
-              className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white flex-1 text-sm" />
+              className={inputClass}
+              style={inputStyle} />
             <input value={newLabel} onChange={e => setNewLabel(e.target.value)}
               placeholder="label (e.g. Period)"
-              className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white flex-1 text-sm" />
+              className={inputClass}
+              style={inputStyle} />
           </div>
           <button onClick={addTerm} disabled={addStatus === 'loading'}
-            className="bg-gray-700 hover:bg-gray-600 disabled:opacity-50 px-4 py-2 rounded text-sm">
+            className="rounded text-sm px-4 min-h-[44px] disabled:opacity-50"
+            style={{ background: "var(--accent)", color: "#fff" }}>
             {addStatus === 'loading' ? 'Adding...' : addStatus === 'success' ? '✓ Added' : 'Add Term'}
           </button>
-          {addStatus === 'error' && <p className="text-red-400 text-sm">Failed to add term.</p>}
+          {addStatus === 'error' && <p className="text-sm" style={{ color: "var(--error)" }}>Failed to add term.</p>}
         </div>
       </div>
     </div>
