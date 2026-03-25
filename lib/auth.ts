@@ -1,11 +1,9 @@
 import { jwtVerify } from 'jose';
+import type { TokenPayload } from './types';
+
+export type { TokenPayload };
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
-
-export interface TokenPayload {
-  sub: string;
-  email: string;
-}
 
 export async function verifyToken(token: string): Promise<TokenPayload> {
   const secret = new TextEncoder().encode(JWT_SECRET);

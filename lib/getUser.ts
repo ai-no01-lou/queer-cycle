@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import type { TokenPayload } from './types';
-import { fetchPlatformSession } from './platformAuth';
+import { verifyToken } from './auth';
 
 export async function getUserFromRequest(): Promise<TokenPayload | null> {
   const cookieStore = cookies();
@@ -8,7 +8,7 @@ export async function getUserFromRequest(): Promise<TokenPayload | null> {
   if (!token) return null;
 
   try {
-    return await fetchPlatformSession(token);
+    return await verifyToken(token);
   } catch {
     return null;
   }
