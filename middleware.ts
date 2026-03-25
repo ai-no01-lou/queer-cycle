@@ -1,17 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from './lib/auth';
 
 const PUBLIC_PATHS = ['/login', '/register'];
+const PLATFORM_AUTH_URL = process.env.PLATFORM_AUTH_URL || 'http://api.localhost/auth';
+
+function stripBasePath(pathname: string) {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+  if (!basePath) return pathname;
+  return pathname.startsWith(basePath) ? pathname.slice(basePath.length) || '/' : pathname;
+}
+
+async function validateToken(token: string) {
+  const res = await fetch(`${PLATFORM_AUTH_URL}/session/me`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+  });
+
+  if (process.env.DEBUG_AUTH === '1') {
+    console.log('[auth][middleware] session/me', res.status);
+  }
+
+  return res.ok;
+}
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  const stripped = stripBasePath(pathname);
 
   // Allow public paths and API routes (API routes handle their own auth)
   if (
-    PUBLIC_PATHS.some((p) => pathname.startsWith(p)) ||
-    pathname.startsWith('/api/') ||
-    pathname.startsWith('/_next/') ||
-    pathname === '/favicon.ico'
+    PUBLIC_PATHS.some((p) => stripped.startsWith(p)) ||
+    stripped.startsWith('/api/') ||
+    stripped.startsWith('/_next/') ||
+    stripped === '/favicon.ico'
   ) {
     return NextResponse.next();
   }
@@ -24,15 +48,18 @@ export async function middleware(req: NextRequest) {
   }
 
   try {
-    await verifyToken(token);
-    return NextResponse.next();
+    const ok = await validateToken(token);
+    if (ok) return NextResponse.next();
   } catch {
-    const url = req.nextUrl.clone();
-    url.pathname = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/login`;
-    const response = NextResponse.redirect(url);
-    response.cookies.delete('token');
-    return response;
+    // fall through to redirect
   }
+
+  const url = req.nextUrl.clone();
+  url.pathname = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/login`;
+  const response = NextResponse.redirect(url);
+  response.cookies.delete('token');
+  response.cookies.delete('refresh_token');
+  return response;
 }
 
 export const config = {

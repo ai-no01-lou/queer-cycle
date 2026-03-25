@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken, TokenPayload } from './auth';
+import type { TokenPayload } from './types';
+import { fetchPlatformSession } from './platformAuth';
 
 export async function requireAuth(
   req: NextRequest
@@ -8,8 +9,9 @@ export async function requireAuth(
   if (!token) {
     return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
   }
+
   try {
-    const user = await verifyToken(token);
+    const user = await fetchPlatformSession(token);
     return { user };
   } catch {
     return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };

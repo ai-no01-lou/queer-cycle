@@ -1,22 +1,23 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
-import Nav from "./components/Nav";
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+import './globals.css';
+import Nav from './components/Nav';
+import { AuthProvider } from './providers/AuthProvider';
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+  src: './fonts/GeistVF.woff',
+  variable: '--font-geist-sans',
+  weight: '100 900',
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+  src: './fonts/GeistMonoVF.woff',
+  variable: '--font-geist-mono',
+  weight: '100 900',
 });
 
 export const metadata: Metadata = {
-  title: "queer-cycle",
-  description: "Cycle and HRT tracker",
+  title: 'queer-cycle',
+  description: 'Cycle and HRT tracker',
 };
 
 export default function RootLayout({
@@ -28,10 +29,12 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
-        style={{ background: "var(--bg)", color: "var(--text)" }}
+        style={{ background: 'var(--bg)', color: 'var(--text)' }}
       >
-        <Nav />
-        <main className="px-4 py-6 pb-20 max-w-md mx-auto">{children}</main>
+        <AuthProvider>
+          <Nav />
+          <main className="px-4 py-6 pb-20 max-w-md mx-auto">{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );
