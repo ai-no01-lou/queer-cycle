@@ -23,7 +23,17 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (process.env.NEXT_PUBLIC_DEBUG_AUTH === '1') {
+      console.log('[auth][client][LoginPage] effect', {
+        authLoading,
+        hasUser: Boolean(user),
+      });
+    }
+
     if (!authLoading && user) {
+      if (process.env.NEXT_PUBLIC_DEBUG_AUTH === '1') {
+        console.log('[auth][client][LoginPage] redirecting authenticated user -> /');
+      }
       router.replace('/');
     }
   }, [authLoading, user, router]);
@@ -35,7 +45,10 @@ export default function LoginPage() {
     try {
       const res = await apiFetch('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-probe-source': 'LoginPage.handleSubmit',
+        },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
@@ -43,7 +56,7 @@ export default function LoginPage() {
         setError(data.error || 'Login failed');
       } else {
         // Update centralized auth state once
-        await refresh();
+        await refresh('LoginPage.handleSubmit:post-login');
         router.replace('/');
         router.refresh();
       }
