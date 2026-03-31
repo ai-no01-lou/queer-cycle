@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken, TokenPayload } from './auth';
+import type { TokenPayload } from './types';
+import { verifyToken } from './auth';
 
 export async function requireAuth(
   req: NextRequest
@@ -8,6 +9,7 @@ export async function requireAuth(
   if (!token) {
     return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
   }
+
   try {
     const user = await verifyToken(token);
     return { user };
